@@ -8,6 +8,9 @@ function App() {
         <p>
           Ini aplikasi buku
         </p>
+        <p>
+          Ini paragraf baru
+        </p>
         <a
           className="App-link"
           href="https://reactjs.org"
