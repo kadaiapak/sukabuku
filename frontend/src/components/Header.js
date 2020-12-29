@@ -1,7 +1,6 @@
 import React from 'react'
 import { Container, Navbar, Nav } from 'react-bootstrap' 
 import { LinkContainer } from 'react-router-bootstrap'
-import { Link } from 'react-router-dom'
 
 const Header = () => {
     return (
@@ -23,7 +22,7 @@ const Header = () => {
                       </Nav>
                     </Navbar.Collapse>
                 </Container>
-</Navbar>
+          </Navbar>
         </header>
     )
 }
