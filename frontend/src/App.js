@@ -5,6 +5,7 @@ import HomeScreen from './screens/HomeScreen'
 import ProductScreen from './screens/ProductScreen'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import CartView from './screens/CartView'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Container>
       <Route path='/' component={HomeScreen} exact/>
       <Route path='/product/:id' component={ProductScreen} />
+      <Route path='/cart/:id?' component={CartView} />
       </Container>
     </main>
     <Footer />
