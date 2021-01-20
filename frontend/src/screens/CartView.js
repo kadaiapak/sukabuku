@@ -20,7 +20,7 @@ const CartView = ({match, history, location}) => {
     }, [dispatch,productId,qty])
 
     const proceedToCheckout = () => {
-        setKalimat("checkout berhasil")
+        history.push('/login?redirect=shipping')
     }
     return (
         <Row>

@@ -11,7 +11,7 @@ const LoginScreen = ({location, history}) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const redirect = location.search ? location.search.split('=').[1] : '/'
+    const redirect = location.search ? location.search.split('=')[1] : '/'
     
     const dispatch = useDispatch()
 
@@ -45,8 +45,8 @@ const LoginScreen = ({location, history}) => {
                     <Form.Control type="password" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)}></Form.Control>
                 </Form.Group>
                 <Button type='submit' variant='primary'>
-          Sign In
-        </Button>
+                    Sign In
+                </Button>
             </Form>
 
             <Row className="py-3">
