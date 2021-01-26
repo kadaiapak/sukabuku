@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { Col, Form, Row, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserDetails, updateUserProfile } from '../actions/userActions'
-import Loader from '../components/Loader'
 import Message from '../components/Message'
 import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
 
@@ -17,7 +16,7 @@ const ProfileScreen = ({history}) => {
     const dispatch = useDispatch()
     
         const userDetails = useSelector(state => state.userDetails)
-        const { loading, user, error } = userDetails
+        const { user, error } = userDetails
 
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
@@ -55,7 +54,6 @@ const ProfileScreen = ({history}) => {
         <Row>
             <Col md={3}> 
             <h2>User Profile</h2>
-            {/* {loading && <Loader />} */}
             {error && <Message variant="danger">{error}</Message>}
             {message && <Message>{message} </Message>}
             {success && <Message>Success</Message>}

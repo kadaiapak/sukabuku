@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect} from 'react'
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
 import { useDispatch, useSelector} from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -6,7 +6,6 @@ import { addToChart, removeFromChart } from '../actions/cartActions'
 import Message from '../components/Message'
 
 const CartView = ({match, history, location}) => {
-    const [kalimat, setKalimat] = useState("")
     const productId = match.params.id
     const qty = location.search ? Number(location.search.split('=')[1]) : 1
     const dispatch = useDispatch()
@@ -71,7 +70,6 @@ const CartView = ({match, history, location}) => {
                             </Button>
                         </ListGroup.Item>
                         <ListGroup.Item>
-                            {kalimat}
                         </ListGroup.Item>
                     </ListGroup>
                 </Card>                       

@@ -18,9 +18,8 @@ const getProductById = asyncHandler(async(req,res) => {
     if(product) {
         res.json(product)
     }else {
-        res.status(404).json({
-            message: "error product not found"
-        })
+        res.status(404)
+        throw new Error('Product Not Found Coba')
     }
 })
 
