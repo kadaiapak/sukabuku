@@ -23,4 +23,37 @@ const getProductById = asyncHandler(async(req,res) => {
     }
 })
 
-module.exports = {getAllProduct, getProductById}
+// @desc    Fetch Single Products By Category
+// @route   GET /api/products/:category
+// @access  Public
+
+// testing
+const getProductByCategory = asyncHandler(async(req,res) => {
+    const { category } = req.params
+    const products = await Product.find({category})
+    if(products) {
+        res.json(products)
+    }else {
+        res.status(404)
+        throw new Error('product not found') 
+    }
+})
+
+// @desc    Fetch Single Products By Category
+// @route   GET /api/products/:category
+// @access  Public
+
+// testing
+const getProductCategory = asyncHandler(async(req,res) => {
+    const {allCategory} = req.params
+    const category = await Product.distinct(allCategory)
+    if(category) {
+        res.json(category)
+    }else {
+        res.status(404)
+        throw new Error('no category yet') 
+    }
+})
+
+
+module.exports = {getAllProduct, getProductById, getProductByCategory, getProductCategory}
