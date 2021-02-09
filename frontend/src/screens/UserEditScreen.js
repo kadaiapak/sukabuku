@@ -49,6 +49,8 @@ const UserEditScreen = ({match, history}) => {
          <FormContainer>
              <Link to='/admin/users' className='btn btn-light my-3'>Go Back</Link>
             <h3> User Detail </h3>
+            {loadingUpdate && <Loader />}
+            {errorUpdate && <Message>{errorUpdate}</Message>}
             {loading ? <Loader/> : error ? <Message variant="danger">{error}</Message> : (
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId="Name">

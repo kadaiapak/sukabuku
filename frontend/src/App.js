@@ -16,6 +16,7 @@ import Coba from './screens/Coba'
 import PaymentScreen from './screens/PaymentScreen'
 import PlaceOrderScreen from './screens/PlaceOrderScreen'
 import OrderDetailScreen from './screens/OrderDetailScreen'
+import ProductListScreen from './screens/ProductListScreen'
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
       <Route path='/product/:id' component={ProductScreen} />
       <Route path='/cart/:id?' component={CartView} />
       <Route path='/admin/userlist' component={UserListScreen} />
+      <Route path='/admin/productlist' component={ProductListScreen} />
       <Route path='/admin/user/:id/edit' component={UserEditScreen}/>
       <Route path='/order/:id' component={OrderDetailScreen} />
       </Container>
