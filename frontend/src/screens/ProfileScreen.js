@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Col, Form, Row, Button } from 'react-bootstrap'
+import { Col, Form, Row, Button, Table } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { listMyOrdersAction } from '../actions/orderAction'
 import { getUserDetails, updateUserProfile } from '../actions/userActions'
+import Loader from '../components/Loader'
 import Message from '../components/Message'
+import { LinkContainer } from 'react-router-bootstrap'
 import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
 
 
@@ -16,7 +19,7 @@ const ProfileScreen = ({history}) => {
     const dispatch = useDispatch()
     
         const userDetails = useSelector(state => state.userDetails)
-        const { user, error } = userDetails
+        const { user, error, loading} = userDetails
 
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
@@ -24,6 +27,8 @@ const ProfileScreen = ({history}) => {
     const userUpdateProfile = useSelector(state => state.userUpdateProfile)
     const { success } = userUpdateProfile
 
+    const listMyOrders = useSelector(state => state.listMyOrders )
+    const {error:errorOrders, orders, loading:loadingOrders} = listMyOrders
 
     useEffect(()=> {
         if(!userInfo){
@@ -32,9 +37,10 @@ const ProfileScreen = ({history}) => {
             if(!user || !user.name || success){
                 dispatch({ type : USER_UPDATE_PROFILE_RESET })
                 dispatch(getUserDetails('profile'))
+                dispatch(listMyOrdersAction())
             }else{
                 setName(user.name)
-                setEmail(user.email)    
+                setEmail(user.email)
             }
         }
     },[dispatch, history, userInfo, user, success])
@@ -57,6 +63,7 @@ const ProfileScreen = ({history}) => {
             {error && <Message variant="danger">{error}</Message>}
             {message && <Message>{message} </Message>}
             {success && <Message>Success</Message>}
+            {loading && <Loader />}
                 <Form onSubmit={profileSubmit}>
                     <Form.Group controlId="name">
                         <Form.Label>Name</Form.Label>
@@ -96,6 +103,40 @@ const ProfileScreen = ({history}) => {
             </Col> 
             <Col md={9}>
                 <h2>User Order</h2>
+                {loadingOrders ? <Loader /> : errorOrders ? <Message variant='danger'>{errorOrders}</Message> : (
+                    <Table striped bordered hover responsive className='table-sm'>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Paid</th>
+                                <th>Delivered</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orders.map(order => (
+                                <tr key={order._id}>
+                                    <td>{order._id}</td>
+                                    <td>{order.createdAt.substring(0,10)}</td>
+                                    <td>{order.totalPrice}</td>
+                                    <td>{order.isPaid ? order.paidAt.substring(0,10) : (
+                                        <i className='fas fa-times' style={{color : 'red'}}></i>
+                                    )}</td>
+                                    <td>{order.isDelivered ? order.deliveredAt.substring(0,10) : (
+                                        <i className='fas fa-times' style={{color : 'red'}}></i>
+                                    )}</td>
+                                    <td>
+                                        <LinkContainer to={`/order/${order._id}`}>
+                                            <Button variant='light'>Details</Button>
+                                        </LinkContainer>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                )}
             </Col>
             
         </Row>

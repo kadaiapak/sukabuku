@@ -21,6 +21,7 @@ const PlaceOrderScreen = ({history}) => {
 
     cart.itemsPrice = tambahDuaAngkaBelakangKoma(cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2))
     cart.shippingPrice = tambahDuaAngkaBelakangKoma(cart.itemsPrice > 100 ? 0 : 100)
+    // cart.shippingPrice = tambahDuaAngkaBelakangKoma(100) hanya mencoba
     cart.taxPrice = tambahDuaAngkaBelakangKoma(Number((0.15*cart.itemsPrice).toFixed(2)))
     cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
     
@@ -29,16 +30,16 @@ const PlaceOrderScreen = ({history}) => {
             history.push(`/order/${order._id}`)
         }
         // eslint-disable-next-line
-    }, [history, success])
+    }, [success])
     
     const placeOrderHandler = () => {
         dispatch(saveOrder({
             orderItems : cartItems,
             shippingAddress : shippingAddress,
             paymentMethod,
-            itemsPrice : cart.itemsPrice,
             taxPrice : cart.taxPrice,
             shippingPrice : cart.shippingPrice,
+            itemsPrice : cart.itemsPrice,
             totalPrice : cart.totalPrice 
         }))
     }

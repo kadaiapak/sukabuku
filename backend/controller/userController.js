@@ -152,9 +152,18 @@ const getSingleUserByAdmin = asyncHandler(async(req, res) => {
 const editSingleUserByAdmin = asyncHandler(async(req, res) => {
     const user = await User.findById(req.params.id).select('-password')
     if(user){
-        user.name = user.name || req.params.name
-        user.email = user.email || req.params.email
-        user.isAdmin = user.isAdmin
+        user.name = req.body.name || user.name
+        user.email = req.body.email || user.email
+        user.isAdmin = req.body.isAdmin
+        
+        const updatedUser = await user.save()
+        res.json({
+            _id : updatedUser._id,
+            name : updatedUser.name,
+            email : updatedUser.email,
+            isAdmin : updatedUser.isAdmin
+        })
+
     }else{
         res.status(404)
         throw new Error('User not found')
@@ -162,4 +171,4 @@ const editSingleUserByAdmin = asyncHandler(async(req, res) => {
 }) 
 
 
-module.exports = {registerUser,authUser,getUserProfile, updateUser, getAllUsers, deleteUser, getSingleUserByAdmin}
+module.exports = {registerUser,authUser,getUserProfile, updateUser, getAllUsers, deleteUser, getSingleUserByAdmin, editSingleUserByAdmin}
