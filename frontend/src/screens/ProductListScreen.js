@@ -6,6 +6,8 @@ import { LinkContainer } from 'react-router-bootstrap'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
  
+// import Action
+import { deleteProductAction } from '../actions/productActions'
 
 const ProductListScreen = ({history}) => {
     // ambil data product dari api yang sudah disediakan
@@ -18,6 +20,9 @@ const ProductListScreen = ({history}) => {
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
 
+    // mengambil delete product reducer untuk menggunakan fitur loading dan success
+    const productDelete = useSelector(state => state.productDelete)
+    const { loading:loadingDelete, success:successDelete, error:errorDelete } = productDelete
 
     // dispatch action product list di useEffect, agar sewaktu pertama 
     // kali component di load, product langsung terpanggil oleh action tersebut
@@ -34,7 +39,11 @@ const ProductListScreen = ({history}) => {
             history.push('/login')
         }
 
-    }, [history, dispatch, userInfo])
+    }, [history, 
+        dispatch,
+        // apabila delete product sukses, maka halaman akan di reload kembali
+        successDelete, 
+        userInfo])
 
     // mengambil data product dari reducer yang sudah disiapkan sebelumnya menggunakan useSelector
     const productList = useSelector(state => state.productList)
@@ -42,7 +51,8 @@ const ProductListScreen = ({history}) => {
 
     // menggunakan fungsi delete product
     const deleteHandler = (id) => {
-        console.log(`deleted ${id}`)
+        // gunakan action delete product yang sudah kita buat
+        dispatch(deleteProductAction(id))
     }
     return (
         <>
@@ -56,6 +66,8 @@ const ProductListScreen = ({history}) => {
                     </Button>
                 </Col>
             </Row>
+            {loadingDelete && <Loader />}
+            {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
             {loadingProduct ? <Loader /> : errorProduct ? <Message>{errorProduct}</Message> : (
             <Table bordered striped hover responsive className='table-sm mt-4'>
                 <thead>

@@ -23,6 +23,28 @@ const getProductById = asyncHandler(async(req,res) => {
     }
 })
 
+// @desc    Delete product by id
+// @route   Delete /api/products/:id
+// @access  Private
+//  kita buat functionnya
+const deleteProduct = asyncHandler(async(req, res) => {
+    // kita cari product nya
+    const product = await Product.findById(req.params.id)
+    if(product){
+        product.remove()
+
+        // kita kirimkan respon, kalau tidak maka akan loading terus terusan
+        res.json({
+            message : 'product remove'
+        })
+    } else {
+        res.status(401)
+        throw new Error('No product found')
+    }
+})
+
+
+
 // @desc    Fetch Single Products By Category
 // @route   GET /api/products/:category
 // @access  Public
@@ -38,6 +60,7 @@ const getProductByCategory = asyncHandler(async(req,res) => {
         throw new Error('product not found') 
     }
 })
+
 
 // @desc    Fetch Single Products By Category
 // @route   GET /api/products/:category
@@ -56,4 +79,4 @@ const getProductCategory = asyncHandler(async(req,res) => {
 })
 
 
-module.exports = {getAllProduct, getProductById, getProductByCategory, getProductCategory}
+module.exports = {getAllProduct, getProductById, deleteProduct, getProductByCategory, getProductCategory}

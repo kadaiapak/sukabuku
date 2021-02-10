@@ -1,4 +1,4 @@
-import { DETAILS_PRODUCT_FAIL, DETAILS_PRODUCT_REQUEST, DETAILS_PRODUCT_SUCCESS, GET_PRODUCT_FAIL, GET_PRODUCT_REQUEST, GET_PRODUCT_SUCCESS } from "../constants/productConstants"
+import { DELETE_PRODUCT_FAIL, DELETE_PRODUCT_REQUEST, DELETE_PRODUCT_SUCCESS, DETAILS_PRODUCT_FAIL, DETAILS_PRODUCT_REQUEST, DETAILS_PRODUCT_SUCCESS, GET_PRODUCT_FAIL, GET_PRODUCT_REQUEST, GET_PRODUCT_SUCCESS } from "../constants/productConstants"
 import axios from 'axios'
 
 export const listProducts = () => async (dispatch) => {
@@ -35,6 +35,32 @@ export const listProductDetails = (id) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: DETAILS_PRODUCT_FAIL,
+            payload : error.response && error.response.data.message ? error.response.data.message : error.message
+        })
+    }
+}
+
+export const deleteProductAction = (id) => async(dispatch, getState) => {
+    try{
+        dispatch({
+            type : DELETE_PRODUCT_REQUEST
+        })
+
+        const { userLogin : { userInfo }} = getState()
+
+        const config = {
+            headers : {
+                Authorization : `Bearer ${userInfo.token}`
+            }
+        }
+
+        await axios.delete(`/api/products/${id}`, config)
+        dispatch({
+            type : DELETE_PRODUCT_SUCCESS
+        })
+    }catch(error){
+        dispatch({
+            type : DELETE_PRODUCT_FAIL,
             payload : error.response && error.response.data.message ? error.response.data.message : error.message
         })
     }

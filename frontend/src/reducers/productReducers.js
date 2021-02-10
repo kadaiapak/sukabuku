@@ -1,4 +1,4 @@
-import { DETAILS_PRODUCT_FAIL, DETAILS_PRODUCT_REQUEST, DETAILS_PRODUCT_SUCCESS, GET_PRODUCT_FAIL, GET_PRODUCT_REQUEST, GET_PRODUCT_SUCCESS } from "../constants/productConstants";
+import { DELETE_PRODUCT_FAIL, DELETE_PRODUCT_REQUEST, DELETE_PRODUCT_SUCCESS, DETAILS_PRODUCT_FAIL, DETAILS_PRODUCT_REQUEST, DETAILS_PRODUCT_SUCCESS, GET_PRODUCT_FAIL, GET_PRODUCT_REQUEST, GET_PRODUCT_SUCCESS } from "../constants/productConstants";
 
 export const productListReducer = (state = { products: [] }, action) => {
     switch(action.type){
@@ -38,6 +38,27 @@ export const productDetailsReducer = (state = { product: { reviews:[]} }, action
                 error : action.payload
             }
         default:
+            return state
+    }
+}
+
+export const productDeleteReducer = (state = {}, action) => {
+    switch(action.type){
+        case DELETE_PRODUCT_REQUEST:
+            return {
+                loading : true
+            }
+        case DELETE_PRODUCT_SUCCESS:
+            return {
+                loading : false,
+                success : true
+            }
+        case DELETE_PRODUCT_FAIL:
+            return {
+                loading : false,
+                error : action.payload
+            }
+        default : 
             return state
     }
 }
