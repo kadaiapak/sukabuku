@@ -44,6 +44,33 @@ const deleteProduct = asyncHandler(async(req, res) => {
 })
 
 
+// @Desc        Create Product
+// @route       Post /api/products
+// access       private, admin
+const createProduct = asyncHandler(async(req, res) => {
+    const product = new Product({
+        user : req.user._id,
+        name : 'sample product',
+        image : '/images/sample.jpg',
+        brand : 'sample brand',
+        category : 'sample category',
+        description : 'sample description',
+        rating : 0,
+        numReviews : 0,
+        price : 0,
+        countInStock : 0,
+    })
+
+    const createdProduct = await product.save()
+    if(createdProduct){
+        res.status(201).json(createdProduct)
+    } else {
+        res.status(401)
+        throw new Error('invalid created product')
+    }
+})
+
+
 
 // @desc    Fetch Single Products By Category
 // @route   GET /api/products/:category
@@ -79,4 +106,4 @@ const getProductCategory = asyncHandler(async(req,res) => {
 })
 
 
-module.exports = {getAllProduct, getProductById, deleteProduct, getProductByCategory, getProductCategory}
+module.exports = {getAllProduct, getProductById, deleteProduct, createProduct, getProductByCategory, getProductCategory}

@@ -1,13 +1,14 @@
 import React, { useEffect} from 'react'
 import { Row, Col, Button, Table } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { listProducts } from '../actions/productActions'
+import { createProductAction, listProducts } from '../actions/productActions'
 import { LinkContainer } from 'react-router-bootstrap'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
  
 // import Action
 import { deleteProductAction } from '../actions/productActions'
+import { CREATE_PRODUCT_RESET } from '../constants/productConstants'
 
 const ProductListScreen = ({history}) => {
     // ambil data product dari api yang sudah disediakan
@@ -24,25 +25,35 @@ const ProductListScreen = ({history}) => {
     const productDelete = useSelector(state => state.productDelete)
     const { loading:loadingDelete, success:successDelete, error:errorDelete } = productDelete
 
+    // mengambil data create product reducer untuk fitur loading dan success
+    const productCreate = useSelector(state => state.productCreate)
+    const { loading:loadingCreate, success:successCreate, product:createdProduct, error:errorCreate} = productCreate
+
     // dispatch action product list di useEffect, agar sewaktu pertama 
     // kali component di load, product langsung terpanggil oleh action tersebut
     useEffect(() => {
-        // cek apakah dia admin?
-        if(userInfo && userInfo.isAdmin){
-            // jika benar maka lakukan ini
-            // jika benar maka panggil list product menggunakan action yang sudah dibuat sebelumnya
-            // jika tidak dipanggil maka akan terjadi bug, product hanya akan tampil jika kita pernah mengunjungi halaman home,
-            //  karena di halaman home lah kita pernah memanggil list product
-            dispatch(listProducts())
-        } else {
-            // jika tidak maka lemparkan ke halaman login
-            history.push('/login')
-        }
-
+        dispatch({
+            type : CREATE_PRODUCT_RESET
+        })
+       //cek apakah dia admin
+       if(userInfo && userInfo.isAdmin){
+            if(successCreate){
+                 // jika sukses create maka push ke halaman product detail untuk nantinya di edit
+                 history.push(`/admin/product/${createdProduct._id}/edit`)
+            }else {
+                //jika belum create barang maka panggil list barang
+                dispatch(listProducts())
+            }
+       }else {
+           //jika tidak lemparkan ke halaman login
+           history.push('/login')
+       }
     }, [history, 
         dispatch,
         // apabila delete product sukses, maka halaman akan di reload kembali
-        successDelete, 
+        successDelete,
+        successCreate,
+        createdProduct,
         userInfo])
 
     // mengambil data product dari reducer yang sudah disiapkan sebelumnya menggunakan useSelector
@@ -54,6 +65,10 @@ const ProductListScreen = ({history}) => {
         // gunakan action delete product yang sudah kita buat
         dispatch(deleteProductAction(id))
     }
+
+    const productCreateHandler = () => {
+        dispatch(createProductAction())
+    }
     return (
         <>
             <Row className='align-item-center'>
@@ -61,13 +76,15 @@ const ProductListScreen = ({history}) => {
                     <h1>Product</h1>
                 </Col>
                 <Col className='text-right'>
-                    <Button className='btn' variant='primary'>
+                    <Button className='btn' variant='primary' onClick={()=> productCreateHandler()}>
                     <i className='fas fa-plus mr-2'></i>Add Product
                     </Button>
                 </Col>
             </Row>
             {loadingDelete && <Loader />}
             {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
+            {loadingCreate && <Loader />}
+            {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
             {loadingProduct ? <Loader /> : errorProduct ? <Message>{errorProduct}</Message> : (
             <Table bordered striped hover responsive className='table-sm mt-4'>
                 <thead>
