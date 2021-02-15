@@ -26,7 +26,7 @@ const ProductScreen = ({history, match}) => {
         {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message>: (
             <Row>
             <Col md={6}>
-                <Image src={product.image} fluid />
+                    <Image src={product.image} fluid/>
             </Col>
             <Col md={3}>
                 <ListGroup variant="flush" >

@@ -1,4 +1,4 @@
-import { LIST_MY_ORDERS_FAIL, LIST_MY_ORDERS_REQUEST, LIST_MY_ORDERS_RESET, LIST_MY_ORDERS_SUCCESS, ORDER_DETAIL_FAIL, ORDER_DETAIL_REQUEST, ORDER_DETAIL_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_REQUEST, ORDER_PAY_RESET, ORDER_PAY_SUCCESS, ORDER_SAVE_FAIL, ORDER_SAVE_REQUEST, ORDER_SAVE_SUCCESS } from "../constants/orderConstants"
+import { LIST_MY_ORDERS_FAIL, LIST_MY_ORDERS_REQUEST, LIST_MY_ORDERS_RESET, LIST_MY_ORDERS_SUCCESS, ORDER_DETAIL_FAIL, ORDER_DETAIL_REQUEST, ORDER_DETAIL_SUCCESS, ORDER_GET_ALL_FAIL, ORDER_GET_ALL_REQUEST, ORDER_GET_ALL_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_REQUEST, ORDER_PAY_RESET, ORDER_PAY_SUCCESS, ORDER_SAVE_FAIL, ORDER_SAVE_REQUEST, ORDER_SAVE_SUCCESS } from "../constants/orderConstants"
 
 export const orderSaveReducer = ( state = {}, action ) => {
     switch (action.type) {
@@ -87,6 +87,30 @@ export const listMyOrdersReducer = (state = { orders : [] }, action) => {
         case LIST_MY_ORDERS_RESET:
             return { orders : []}
         default:
+            return state
+    }
+}
+
+// reducer untuk list semua order by admin
+export const listAllOrderReducer = (state ={ orders : [] }, action) => {
+    switch(action.type){
+        case ORDER_GET_ALL_REQUEST:
+            return {
+                ...state,
+                loading : true
+            }
+        case ORDER_GET_ALL_SUCCESS:
+            return {
+                loading : false,
+                success : true,
+                orders : action.payload
+            }
+        case ORDER_GET_ALL_FAIL:
+            return {
+                loading : false,
+                error : action.payload
+            }
+        default :
             return state
     }
 }

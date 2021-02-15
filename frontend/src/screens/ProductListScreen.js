@@ -8,7 +8,7 @@ import Message from '../components/Message'
  
 // import Action
 import { deleteProductAction } from '../actions/productActions'
-import { CREATE_PRODUCT_RESET } from '../constants/productConstants'
+import { CREATE_PRODUCT_RESET} from '../constants/productConstants'
 
 const ProductListScreen = ({history}) => {
     // ambil data product dari api yang sudah disediakan
@@ -35,6 +35,8 @@ const ProductListScreen = ({history}) => {
         dispatch({
             type : CREATE_PRODUCT_RESET
         })
+
+        
        //cek apakah dia admin
        if(userInfo && userInfo.isAdmin){
             if(successCreate){

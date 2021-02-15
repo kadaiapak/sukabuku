@@ -70,6 +70,33 @@ const createProduct = asyncHandler(async(req, res) => {
     }
 })
 
+//  @desc   Update product 
+//  @route  PUT /api/products/:id
+//  access  Private, Admin
+const updateProduct = asyncHandler(async(req,res) => {
+// cari product yang akan di update
+const {name, price, image, brand, category, description, countInStock } = req.body
+const product = await Product.findById(req.params.id)
+if(product){
+    // jika product ditemukan maka ganti valuenya dengan value baru sesuai dengan isi form
+    product.name = name
+    product.price = price
+    product.image = image
+    product.brand = brand
+    product.category = category
+    product.description = description
+    product.countInStock = countInStock
+
+    const saveUpdatedProduct = await product.save()
+    res.status(201).json(saveUpdatedProduct)
+}else {
+    // jika tidak ada product tersebut maka kirim pesan
+    res.status(404)
+    throw new Error('product not found')
+}
+
+})
+
 
 
 // @desc    Fetch Single Products By Category
@@ -106,4 +133,4 @@ const getProductCategory = asyncHandler(async(req,res) => {
 })
 
 
-module.exports = {getAllProduct, getProductById, deleteProduct, createProduct, getProductByCategory, getProductCategory}
+module.exports = {getAllProduct, getProductById, deleteProduct, createProduct, getProductByCategory, getProductCategory, updateProduct}

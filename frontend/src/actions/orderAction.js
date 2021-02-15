@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { LIST_MY_ORDERS_FAIL, LIST_MY_ORDERS_REQUEST, LIST_MY_ORDERS_SUCCESS, ORDER_DETAIL_FAIL, ORDER_DETAIL_REQUEST, ORDER_DETAIL_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_SAVE_FAIL, ORDER_SAVE_REQUEST, ORDER_SAVE_SUCCESS } from '../constants/orderConstants'
+import { LIST_MY_ORDERS_FAIL, LIST_MY_ORDERS_REQUEST, LIST_MY_ORDERS_SUCCESS, ORDER_DETAIL_FAIL, ORDER_DETAIL_REQUEST, ORDER_DETAIL_SUCCESS, ORDER_GET_ALL_FAIL, ORDER_GET_ALL_REQUEST, ORDER_GET_ALL_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_SAVE_FAIL, ORDER_SAVE_REQUEST, ORDER_SAVE_SUCCESS } from '../constants/orderConstants'
 
 
 export const saveOrder = ( order ) => async(dispatch, getState) => {
@@ -109,5 +109,35 @@ export const listMyOrdersAction = () => async(dispatch, getState) => {
             type: LIST_MY_ORDERS_FAIL,
             payload : error.response && error.response.data.message ? error.response.data.message : error.message
         })
+    }
+}
+
+//action untuk get semua order by admin
+export const getAllOrderAction = () => async(dispatch, getState) => {
+    try {
+        dispatch({
+            type : ORDER_GET_ALL_REQUEST
+        })
+
+        const { userLogin : { userInfo }} = getState()
+
+        const config = {
+            headers : {
+                Authorization : `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.get(`/api/orders`, config)
+        
+        dispatch({
+            type : ORDER_GET_ALL_SUCCESS,
+            payload : data
+        })
+    } catch (error) {
+        dispatch({
+            type : ORDER_GET_ALL_FAIL
+        })
+
+
     }
 }

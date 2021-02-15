@@ -1,4 +1,4 @@
-import { CREATE_PRODUCT_FAIL, CREATE_PRODUCT_REQUEST, CREATE_PRODUCT_SUCCESS, DELETE_PRODUCT_FAIL, DELETE_PRODUCT_REQUEST, DELETE_PRODUCT_SUCCESS, DETAILS_PRODUCT_FAIL, DETAILS_PRODUCT_REQUEST, DETAILS_PRODUCT_SUCCESS, GET_PRODUCT_FAIL, GET_PRODUCT_REQUEST, GET_PRODUCT_SUCCESS } from "../constants/productConstants"
+import { CREATE_PRODUCT_FAIL, CREATE_PRODUCT_REQUEST, CREATE_PRODUCT_SUCCESS, DELETE_PRODUCT_FAIL, DELETE_PRODUCT_REQUEST, DELETE_PRODUCT_SUCCESS, DETAILS_PRODUCT_FAIL, DETAILS_PRODUCT_REQUEST, DETAILS_PRODUCT_SUCCESS, EDIT_PRODUCT_FAIL, EDIT_PRODUCT_REQUEST, EDIT_PRODUCT_SUCCESS, GET_PRODUCT_FAIL, GET_PRODUCT_REQUEST, GET_PRODUCT_SUCCESS } from "../constants/productConstants"
 import axios from 'axios'
 
 export const listProducts = () => async (dispatch) => {
@@ -90,6 +90,39 @@ export const createProductAction = () => async(dispatch, getState) => {
     }catch(error){
         dispatch({
             type : CREATE_PRODUCT_FAIL,
+            payload : error.response && error.response.data.message ? error.response.data.message : error.message
+        })
+    }
+}
+
+// edit product action
+export const editProductAction = (product) => async(dispatch,getState) => {
+    try {
+        // pertama kali dispatch untuk request
+        dispatch({
+            type : EDIT_PRODUCT_REQUEST
+        })
+
+        // ambil data dari state, data yang kita butuhkan yaitu token, agar bisa di cek apakah dia login, dan apakah yang login itu admin
+        const {userLogin : {userInfo}} = getState()
+
+        // memasukkan config
+        const config = {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put(`/api/products/${product._id}`, product, config )
+        dispatch({
+            type : EDIT_PRODUCT_SUCCESS,
+            payload : data
+        })
+
+    } catch (error) {
+        dispatch({
+            type : EDIT_PRODUCT_FAIL,
             payload : error.response && error.response.data.message ? error.response.data.message : error.message
         })
     }
