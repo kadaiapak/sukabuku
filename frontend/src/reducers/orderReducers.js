@@ -1,4 +1,4 @@
-import { LIST_MY_ORDERS_FAIL, LIST_MY_ORDERS_REQUEST, LIST_MY_ORDERS_RESET, LIST_MY_ORDERS_SUCCESS, ORDER_DETAIL_FAIL, ORDER_DETAIL_REQUEST, ORDER_DETAIL_SUCCESS, ORDER_GET_ALL_FAIL, ORDER_GET_ALL_REQUEST, ORDER_GET_ALL_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_REQUEST, ORDER_PAY_RESET, ORDER_PAY_SUCCESS, ORDER_SAVE_FAIL, ORDER_SAVE_REQUEST, ORDER_SAVE_SUCCESS } from "../constants/orderConstants"
+import { LIST_MY_ORDERS_FAIL, LIST_MY_ORDERS_REQUEST, LIST_MY_ORDERS_RESET, LIST_MY_ORDERS_SUCCESS, ORDER_DELIVER_FAIL, ORDER_DELIVER_REQUEST, ORDER_DELIVER_RESET, ORDER_DELIVER_SUCCESS, ORDER_DETAIL_FAIL, ORDER_DETAIL_REQUEST, ORDER_DETAIL_SUCCESS, ORDER_GET_ALL_FAIL, ORDER_GET_ALL_REQUEST, ORDER_GET_ALL_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_REQUEST, ORDER_PAY_RESET, ORDER_PAY_SUCCESS, ORDER_SAVE_FAIL, ORDER_SAVE_REQUEST, ORDER_SAVE_SUCCESS } from "../constants/orderConstants"
 
 export const orderSaveReducer = ( state = {}, action ) => {
     switch (action.type) {
@@ -45,6 +45,7 @@ export const orderDetailsReducer = ( state = { loading : true, orderItems: [], s
 
 }
 
+// reducer for update order to pay by admin
 export const orderPayReducer = (state={}, action) => {
     switch (action.type) {
         case ORDER_PAY_REQUEST:
@@ -68,6 +69,31 @@ export const orderPayReducer = (state={}, action) => {
     }
 }
 
+// reducer untuk update order to deliver by admin
+export const orderDeliverReducer = (state = {}, action) => {
+    switch (action.type) {
+        case ORDER_DELIVER_REQUEST:
+            return {
+                loading : true
+            }
+        case ORDER_DELIVER_SUCCESS:
+            return {
+                loading : false,
+                success : true
+            }
+        case ORDER_DELIVER_FAIL:
+            return {
+                loading : false,
+                error : action.payload
+            }
+        case ORDER_DELIVER_RESET:
+            return {}
+        default:
+            return state
+    }
+}
+
+// reducer untuk list ordernya sendiri dari para user
 export const listMyOrdersReducer = (state = { orders : [] }, action) => {
     switch (action.type) {
         case LIST_MY_ORDERS_REQUEST:

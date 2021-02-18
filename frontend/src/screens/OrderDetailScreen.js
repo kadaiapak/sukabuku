@@ -9,7 +9,7 @@ import Loader from '../components/Loader'
 import { getOrderDetail, payOrder } from '../actions/orderAction'
 import { ORDER_PAY_RESET } from '../constants/orderConstants'
 
-const OrderDetailScreen = ({match}) => {
+const OrderDetailScreen = ({match, history}) => {
     const orderId = match.params.id
     
     const [sdkReady, setSdkReady] = useState(false)
@@ -19,10 +19,17 @@ const OrderDetailScreen = ({match}) => {
     const orderDetails = useSelector(state => state.orderDetails)
     const { error, order, loading } = orderDetails
 
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
     const orderPay = useSelector(state => state.orderPay)
     const { success:successPay, loading:loadingPay} = orderPay
 
     useEffect(() => {
+
+        if(!userInfo){
+            history.push('/login')
+        }
         const addPaypalScript = async() => {
             const { data: clientId } = await axios.get('/api/config/paypal')
             const script = document.createElement('script')
@@ -34,6 +41,7 @@ const OrderDetailScreen = ({match}) => {
             }
             document.body.appendChild(script)
         }
+
 
         if(!order || successPay){
             dispatch({
@@ -47,7 +55,7 @@ const OrderDetailScreen = ({match}) => {
                 setSdkReady(true)
             }
         }
-    }, [dispatch, orderId, successPay, order])
+    }, [dispatch, orderId, successPay, order, userInfo, history])
 
     const successPaymentHandler = (paymentResult) => {
         console.log(paymentResult)
@@ -107,7 +115,7 @@ const OrderDetailScreen = ({match}) => {
                     </ListGroup.Item>
                 </ListGroup>
             </Col>
-            <Col md={4}>
+             <Col md={4}>
                 <Card>
                     <ListGroup variant='flush'>
                         <ListGroup.Item>

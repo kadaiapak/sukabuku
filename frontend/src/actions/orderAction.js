@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { LIST_MY_ORDERS_FAIL, LIST_MY_ORDERS_REQUEST, LIST_MY_ORDERS_SUCCESS, ORDER_DETAIL_FAIL, ORDER_DETAIL_REQUEST, ORDER_DETAIL_SUCCESS, ORDER_GET_ALL_FAIL, ORDER_GET_ALL_REQUEST, ORDER_GET_ALL_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_SAVE_FAIL, ORDER_SAVE_REQUEST, ORDER_SAVE_SUCCESS } from '../constants/orderConstants'
+import { LIST_MY_ORDERS_FAIL, LIST_MY_ORDERS_REQUEST, LIST_MY_ORDERS_SUCCESS, ORDER_DELIVER_FAIL, ORDER_DELIVER_REQUEST, ORDER_DELIVER_SUCCESS, ORDER_DETAIL_FAIL, ORDER_DETAIL_REQUEST, ORDER_DETAIL_SUCCESS, ORDER_GET_ALL_FAIL, ORDER_GET_ALL_REQUEST, ORDER_GET_ALL_SUCCESS, ORDER_PAY_FAIL, ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_SAVE_FAIL, ORDER_SAVE_REQUEST, ORDER_SAVE_SUCCESS } from '../constants/orderConstants'
 
 
 export const saveOrder = ( order ) => async(dispatch, getState) => {
@@ -84,6 +84,36 @@ export const payOrder = (orderId, paymentResult) => async(dispatch, getState) =>
         })
     }
 }
+
+export const deliverOrder = (id) => async(dispatch, getState) => {
+    try {
+        dispatch({
+            type : ORDER_DELIVER_REQUEST
+        })
+
+        const { userLogin : { userInfo }} = getState()
+
+        const config = {
+            headers : {
+                Authorization : `Bearer ${userInfo.token}`
+            }
+        }
+
+        await axios.put(`/api/orders/${id}/deliver`,{}, config)
+        dispatch({
+            type : ORDER_DELIVER_SUCCESS
+        })
+    } catch (error) {
+        dispatch({
+            type : ORDER_DELIVER_FAIL,
+            payload : error.response && error.response.data.message ? error.response.data.message : error.message
+        })
+    }
+}
+
+
+
+
 
 export const listMyOrdersAction = () => async(dispatch, getState) => {
     try {

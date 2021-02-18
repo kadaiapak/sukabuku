@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path')
+const morgan = require('morgan')
 const connectDB = require('./config/db');
 const productRoute = require('./routes/productRoute')
 const userRoute = require('./routes/userRoute')
@@ -13,6 +14,10 @@ dotenv.config()
 connectDB()
 
 const app = express();
+
+if(process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'))
+}
 app.use(express.json())
 
 app.get('/',(req,res) => {

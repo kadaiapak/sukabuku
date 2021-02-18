@@ -74,6 +74,29 @@ const updateOrderToPaid = asyncHandler(async(req,res) => {
     }
 })
 
+//  @desc       Update order to delivered by admin
+//  @route      PUT /api/order/:id/deliver
+//  @access     Private, Admin
+
+const updateOrderToDeliver = asyncHandler(async(req, res) => {
+    const order = await Order.findById(req.params.id)
+    if(order){
+        if(order.isPaid){
+
+            order.isDelivered = true,
+            order.deliveredAt = Date.now()
+            
+            const updatedOrderDelivered = await order.save()
+            res.json(updatedOrderDelivered)
+        } else {
+            res.status(400)
+            throw new Error('Order isnt paid yet')
+        }
+    }else {
+        res.status(404)
+        throw new Error('Order not found')
+    }
+})
 
 //  @desc       Get all orders only by admin
 //  @route      GET /api/orders
@@ -98,4 +121,4 @@ const getMyOrder = asyncHandler(async(req,res) => {
 
 
 
-module.exports = { saveOrder, getOrderById, getAllOrders, updateOrderToPaid, getMyOrder}
+module.exports = { saveOrder, getOrderById, getAllOrders, updateOrderToPaid, updateOrderToDeliver, getMyOrder }

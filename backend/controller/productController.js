@@ -74,8 +74,9 @@ const createProduct = asyncHandler(async(req, res) => {
 //  @route  PUT /api/products/:id
 //  access  Private, Admin
 const updateProduct = asyncHandler(async(req,res) => {
-// cari product yang akan di update
+//  ambil ddata dari frontend
 const {name, price, image, brand, category, description, countInStock } = req.body
+//  cari product yang akan di update
 const product = await Product.findById(req.params.id)
 if(product){
     // jika product ditemukan maka ganti valuenya dengan value baru sesuai dengan isi form
@@ -115,6 +116,45 @@ const getProductByCategory = asyncHandler(async(req,res) => {
     }
 })
 
+// @desc    Review a product by User
+// @route   POST /api/products/:id/reviews
+// @access  Private
+const productReview = asyncHandler(async(req,res) => {
+    const { comment, rating } = req.body
+    
+    // find the product
+    const product = await Product.findById(req.params.id)
+    if(product){
+        // jika product dengan id tersebut ketemu, maka 
+        // selanjutnya cek, apakah orang yang mau review product sudah pernah review sebelumnya
+        // karna satu orang hanya bisa review satu kali pada tiap tiap product
+        const reviewedProduct = product.reviews.find(p => p.user.toString() === req.user._id.toString())
+        if(reviewedProduct){
+            res.status(400)
+            throw new Error('You already review this product fucker, why ????')
+        }
+
+        const review = {
+            user : req.user._id,
+            name : req.user.name,
+            comment,
+            rating : Number(rating)
+        }
+
+        product.reviews.push(review)
+
+        product.numReviews = product.reviews.length
+
+        product.rating = product.reviews.reduce((acc,item) => item.rating + acc, 0) / product.reviews.length
+
+        await product.save()
+        res.json({message : 'Thanks for reviewing this fucking shit product'})
+ 
+    }else {
+        res.status(400)
+        throw new Error('Product not fucking founding fucker')
+    }
+})
 
 // @desc    Fetch Single Products By Category
 // @route   GET /api/products/:category
@@ -133,4 +173,14 @@ const getProductCategory = asyncHandler(async(req,res) => {
 })
 
 
-module.exports = {getAllProduct, getProductById, deleteProduct, createProduct, getProductByCategory, getProductCategory, updateProduct}
+
+
+module.exports = {
+    getAllProduct, 
+    getProductById, 
+    deleteProduct, 
+    createProduct, 
+    getProductByCategory, 
+    getProductCategory, 
+    updateProduct,
+    productReview}

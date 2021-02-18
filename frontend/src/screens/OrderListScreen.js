@@ -32,7 +32,7 @@ const OrderListScreen = ({history}) => {
     return (
       // kalau tidak ada loading, order.map akan terjadi error karena komponen di load terlalu cepat
       <>
-        {loading ? (<Loader></Loader>) : (
+        {loading ? (<Loader />) : error ? (<Message variant='danger'>{error}</Message>): (
             <Table striped bordered hover responsive className='table-sm'>
             <thead>
                 <tr>
