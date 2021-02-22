@@ -6,7 +6,13 @@ const Product = require('../model/productModel')
 // @route   GET /api/products
 // @access  Public
 const getAllProduct = asyncHandler(async(req, res) => {
-    const products = await Product.find()
+    const keyword = req.query.keyword ? {
+        name : {
+            $regex : req.query.keyword,
+            $options : 'i '
+        }
+    } : {}
+    const products = await Product.find({...keyword})
      res.json(products)
 })
 
@@ -156,6 +162,21 @@ const productReview = asyncHandler(async(req,res) => {
     }
 })
 
+// @desc     Get product by rating for carousel
+// @route    GET /api/products/top
+// @access   public
+
+const topProduct = asyncHandler(async(req,res) => {
+    product = await Product.find({}).sort({ rating : -1}).limit(3)
+    if(product){
+        res.status(201)
+        res.json(product)
+    }else {
+        res.status(404)
+        throw new Error('No product')
+    }
+})
+
 // @desc    Fetch Single Products By Category
 // @route   GET /api/products/:category
 // @access  Public
@@ -183,4 +204,5 @@ module.exports = {
     getProductByCategory, 
     getProductCategory, 
     updateProduct,
+    topProduct,
     productReview}

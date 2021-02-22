@@ -14,3 +14,22 @@ h3 {
 .rating span {
   margin: 0.1rem;
 }
+
+/* style untuk  */
+.p__date {
+  font-size : 10px;
+  font-weight:100;
+}
+
+.div__image_profile_review{
+  height : 50px;
+  width : 50px;
+}
+
+/* style product image */
+.product__image{
+  height : 180px;
+  width : 100%;
+
+}
+

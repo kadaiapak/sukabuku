@@ -34,6 +34,7 @@ function App() {
       <Route path='/payment' component={PaymentScreen} />
       <Route path='/coba' component={Coba}/>
       <Route path='/placeorder' component={PlaceOrderScreen} />
+      <Route path='/search/:keyword' component={HomeScreen}/>
       <Route path='/' component={HomeScreen} exact/>
       <Route path='/product/:id' component={ProductScreen} />
       <Route path='/cart/:id?' component={CartView} />

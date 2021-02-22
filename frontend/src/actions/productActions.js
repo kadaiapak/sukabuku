@@ -1,13 +1,13 @@
-import { CREATE_PRODUCT_FAIL, CREATE_PRODUCT_REQUEST, CREATE_PRODUCT_SUCCESS, DELETE_PRODUCT_FAIL, DELETE_PRODUCT_REQUEST, DELETE_PRODUCT_SUCCESS, DETAILS_PRODUCT_FAIL, DETAILS_PRODUCT_REQUEST, DETAILS_PRODUCT_SUCCESS, EDIT_PRODUCT_FAIL, EDIT_PRODUCT_REQUEST, EDIT_PRODUCT_SUCCESS, GET_PRODUCT_FAIL, GET_PRODUCT_REQUEST, GET_PRODUCT_SUCCESS } from "../constants/productConstants"
+import { CREATE_PRODUCT_FAIL, CREATE_PRODUCT_REQUEST, CREATE_PRODUCT_SUCCESS, DELETE_PRODUCT_FAIL, DELETE_PRODUCT_REQUEST, DELETE_PRODUCT_SUCCESS, DETAILS_PRODUCT_FAIL, DETAILS_PRODUCT_REQUEST, DETAILS_PRODUCT_SUCCESS, EDIT_PRODUCT_FAIL, EDIT_PRODUCT_REQUEST, EDIT_PRODUCT_SUCCESS, GET_PRODUCT_FAIL, GET_PRODUCT_REQUEST, GET_PRODUCT_SUCCESS, PRODUCT_TOP_FAIL, PRODUCT_TOP_REQUEST, PRODUCT_TOP_SUCCESS, REVIEW_PRODUCT_FAIL, REVIEW_PRODUCT_REQUEST, REVIEW_PRODUCT_SUCCESS } from "../constants/productConstants"
 import axios from 'axios'
 
-export const listProducts = () => async (dispatch) => {
+export const listProducts = (keyword='') => async (dispatch) => {
     try {
         dispatch({
             type: GET_PRODUCT_REQUEST,
         })
     
-        const { data } = await axios.get('/api/products')
+        const { data } = await axios.get(`/api/products?keyword=${keyword}`)
         dispatch({
             type: GET_PRODUCT_SUCCESS,
             payload : data
@@ -123,6 +123,59 @@ export const editProductAction = (product) => async(dispatch,getState) => {
     } catch (error) {
         dispatch({
             type : EDIT_PRODUCT_FAIL,
+            payload : error.response && error.response.data.message ? error.response.data.message : error.message
+        })
+    }
+}
+
+// action untuk review / comment product
+export const reviewProductAction = (productId, review) => async(dispatch,getState) => {
+    try {
+        dispatch({
+            type : REVIEW_PRODUCT_REQUEST
+        })
+
+        const {userLogin : {userInfo}} = getState()
+
+        const config = {
+            headers : {
+                'Content-Type' : 'application/json',
+                Authorization : `Bearer ${userInfo.token}`
+            }
+        }
+
+        await axios.post(`/api/products/${productId}/reviews`, review, config)
+
+        dispatch({
+            type : REVIEW_PRODUCT_SUCCESS
+        })
+
+    } catch (error) {
+        dispatch({
+            type : REVIEW_PRODUCT_FAIL,
+            payload : error.response && error.response.data.message ? error.response.data.message : error.message
+
+        })
+    }
+}
+
+// action untuk top product untuk carousel
+
+export const productTopAction = () => async(dispatch) => {
+    try {
+        dispatch({
+            type : PRODUCT_TOP_REQUEST
+        })
+
+        const { data } = await axios.get('/api/products/top')
+
+        dispatch({
+            type : PRODUCT_TOP_SUCCESS,
+            payload : data
+        })
+    } catch (error) {
+        dispatch({
+            type : PRODUCT_TOP_FAIL,
             payload : error.response && error.response.data.message ? error.response.data.message : error.message
         })
     }
